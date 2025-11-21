@@ -1,0 +1,307 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Best Wishes</title>
+
+  <!-- 手機 RWD -->
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <!-- 不讓搜尋引擎收錄 -->
+  <meta name="robots" content="noindex, nofollow" />
+
+  <style>
+    :root {
+      --bg: #f5f5f5;
+      --card-bg: #ffffff;
+      --text-main: #111111;
+      --text-sub: #555555;
+      --accent: #111111;
+      --border-soft: #e0e0e0;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      background: radial-gradient(circle at top left, #e0e0e0 0, #f5f5f5 45%, #ffffff 100%);
+      color: var(--text-main);
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 24px;
+    }
+
+    .frame {
+      max-width: 720px;
+      width: 100%;
+      background: var(--card-bg);
+      border-radius: 20px;
+      border: 1px solid var(--border-soft);
+      box-shadow:
+        0 18px 45px rgba(0,0,0,0.06),
+        0 0 0 1px rgba(255,255,255,0.8) inset;
+      padding: 28px 24px 24px;
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+    }
+
+    @media (min-width: 720px) {
+      .frame {
+        padding: 32px 32px 28px;
+      }
+    }
+
+    .header-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 16px;
+    }
+
+    .title-block {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .title-main {
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      font-size: 14px;
+      color: var(--text-sub);
+    }
+
+    .title-big {
+      font-size: 28px;
+      font-weight: 600;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+
+    .title-sub {
+      font-size: 13px;
+      color: var(--text-sub);
+      max-width: 420px;
+      line-height: 1.6;
+    }
+
+    .tag {
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 0.18em;
+      padding: 6px 10px;
+      border-radius: 999px;
+      border: 1px solid var(--border-soft);
+      color: var(--text-sub);
+      white-space: nowrap;
+    }
+
+    .divider {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .divider-line {
+      flex: 1;
+      height: 1px;
+      background: linear-gradient(to right, transparent, #cccccc, transparent);
+    }
+
+    .divider-label {
+      font-size: 11px;
+      letter-spacing: 0.22em;
+      text-transform: uppercase;
+      color: var(--text-sub);
+      white-space: nowrap;
+    }
+
+    .body-row {
+      display: grid;
+      grid-template-columns: minmax(0, 3fr) minmax(0, 2fr);
+      gap: 20px;
+    }
+
+    @media (max-width: 720px) {
+      .body-row {
+        grid-template-columns: minmax(0, 1fr);
+      }
+    }
+
+    .message-block {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .message-lead {
+      font-size: 15px;
+      line-height: 1.7;
+    }
+
+    .message-note {
+      font-size: 12px;
+      color: var(--text-sub);
+      line-height: 1.7;
+    }
+
+    .pills {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      margin-top: 4px;
+    }
+
+    .pill {
+      font-size: 11px;
+      padding: 4px 8px;
+      border-radius: 999px;
+      border: 1px solid var(--border-soft);
+      color: var(--text-sub);
+    }
+
+    .cta-block {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      align-items: flex-start;
+    }
+
+    .cta-label {
+      font-size: 11px;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--text-sub);
+    }
+
+    .cta-button {
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+      padding: 10px 18px;
+      border-radius: 999px;
+      background: var(--accent);
+      color: #ffffff;
+      font-size: 13px;
+      font-weight: 500;
+      text-decoration: none;
+      border: none;
+      cursor: pointer;
+      transition: transform 0.12s ease, box-shadow 0.12s ease, background 0.12s ease;
+      box-shadow: 0 10px 25px rgba(0,0,0,0.18);
+    }
+
+    .cta-button:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 14px 30px rgba(0,0,0,0.22);
+      background: #000000;
+    }
+
+    .cta-button:active {
+      transform: translateY(0);
+      box-shadow: 0 6px 16px rgba(0,0,0,0.18);
+    }
+
+    .cta-arrow {
+      font-size: 14px;
+    }
+
+    .cta-hint {
+      font-size: 11px;
+      color: var(--text-sub);
+      line-height: 1.7;
+      max-width: 240px;
+    }
+
+    .footer {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 10px;
+      margin-top: 4px;
+    }
+
+    .footer-note {
+      font-size: 10px;
+      color: var(--text-sub);
+    }
+
+    .footer-mark {
+      font-size: 10px;
+      letter-spacing: 0.22em;
+      text-transform: uppercase;
+      color: var(--text-sub);
+    }
+  </style>
+</head>
+<body>
+  <main class="frame">
+    <section class="header-row">
+      <div class="title-block">
+        <div class="title-main">Best Wishes</div>
+        <div class="title-big">For Your Next Chapter</div>
+        <p class="title-sub">
+          A small place where we quietly collected messages from people who have worked with you. 
+          This page will stay here, in case you ever want to revisit these words.
+        </p>
+      </div>
+      <div class="tag">Thank you for everything</div>
+    </section>
+
+    <section class="divider">
+      <div class="divider-line"></div>
+      <div class="divider-label">Messages</div>
+      <div class="divider-line"></div>
+    </section>
+
+    <section class="body-row">
+      <div class="message-block">
+        <p class="message-lead">
+          We invited colleagues who have crossed paths with you to leave a short note.
+          Some messages may be long, some very simple — all are sincere.
+        </p>
+        <p class="message-note">
+          This page does not appear in search engines, and the link is only shared with people 
+          who received it directly. Please feel free to come back here whenever you like.
+        </p>
+        <div class="pills">
+          <span class="pill">Gratitude</span>
+          <span class="pill">Memories</span>
+          <span class="pill">New journeys</span>
+        </div>
+      </div>
+
+      <div class="cta-block">
+        <div class="cta-label">For colleagues</div>
+        <a
+          class="cta-button"
+          href="https://docs.google.com/forms/d/e/1FAIpQLSf9vXKaUCZD1DUzCDj71dnj9gSqC5y7wv1GP6Vv4-0tCsu9jA/viewform?usp=dialog"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          <span>Write a message</span>
+          <span class="cta-arrow">↗</span>
+        </a>
+        <p class="cta-hint">
+          Clicking this will open a simple form. You don't need an account to write — 
+          just your words.
+        </p>
+      </div>
+    </section>
+
+    <section class="footer">
+      <div class="footer-note">
+        This page is meant to quietly keep a trace of the time we worked together.
+      </div>
+      <div class="footer-mark">Best wishes</div>
+    </section>
+  </main>
+</body>
+</html>
