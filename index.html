@@ -317,7 +317,7 @@
   </main>
 
   <script>
-    const API_URL = "https://script.google.com/macros/s/AKfycbztAoU66v2Mx9vucLPOtHZCeQdgQiTh-uvzrVefp-cqgtoyd1thN2WQvnSbwL2nkyfl8g/exec";
+    const API_URL = "https://script.google.com/macros/s/AKfycbyb6qQCrE7s8BK8UQpslOctDWB0OE9Yi6o7JTvOoOsk/dev";
 
     fetch(API_URL)
       .then(res => res.json())
@@ -341,9 +341,9 @@
         rows.forEach(entry => {
           const keys = Object.keys(entry);
 
-          const timeKey = keys.find(k => k.toLowerCase().includes("timestamp"));
-          const nameKey = keys.find(k => k.toLowerCase().startsWith("what is your name"));
-          const msgKey  = keys.find(k => k.toLowerCase().startsWith("what message"));
+          const timeKey = keys.find(k => k.toLowerCase().includes("時間戳記"));
+          const nameKey = keys.find(k => k.toLowerCase().startsWith("What is your name?  :D"));
+          const msgKey  = keys.find(k => k.toLowerCase().startsWith("What message would you like to share with Jennifer?   :D"));
 
           const timestamp = timeKey ? entry[timeKey] : "";
           const name = nameKey ? (entry[nameKey] || "Anonymous") : "Anonymous";
