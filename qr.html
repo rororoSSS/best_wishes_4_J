@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8" />
+  <title>QR 21×21 Matrix Demo</title>
+
+  <!-- 引入 qrcode-generator（CDN） -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcode-generator/1.4.4/qrcode.min.js"></script>
+
+  <style>
+    body {
+      font-family: monospace;
+      padding: 24px;
+    }
+    .grid {
+      line-height: 1.3;
+    }
+  </style>
+</head>
+<body>
+
+<h2>QR Code 21×21 Matrix</h2>
+<pre id="grid" class="grid"></pre>
+
+<script>
+  // 建立 Version 1 (21×21) 的 QR code
+  var qr = qrcode(1, 'L');
+  qr.addData("HELLO GITHUB PAGES!");
+  qr.make();
+
+  var count = qr.getModuleCount(); // 21
+  var result = [];
+
+  for (var r = 0; r < count; r++) {
+    let row = [];
+    for (var c = 0; c < count; c++) {
+      row.push(qr.isDark(r,c) ? "■" : "□");
+    }
+    result.push(row.join(" "));
+  }
+
+  document.getElementById("grid").innerText = result.join("\n");
+</script>
+
+</body>
+</html>
