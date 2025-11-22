@@ -317,69 +317,51 @@
   </main>
 
   <script>
-    // 這裡放「沒有 query string 的」 Apps Script /exec URL
-    const API_URL = "https://script.google.com/macros/s/AKfycbye536xZFjYUj6V1A8RyFtDS4m5PPh53vBKfCamVLccCjhcqmJw0LD6x2ZfjvDq0qZrng/exec";
-  
-    const TIME_FIELD = "時間戳記";
-    const NAME_FIELD = "What is your name?  :D";
-    const MSG_FIELD  = "What message would you like to share with Jennifer?  :D";
+    // 這裡用你現在 *真的* 有回 handleGASMessages(...) 的那條 URL（不含 ?callback）
+    const API_URL = "https://script.google.com/macros/s/AKfycbztAoU66v2Mx9vucLPOtHZCeQdgQiTh-uvzrVefp-cqgtoyd1thN2WQvnSbwL2nkyfl8g/exec";
   
     function renderMessages(rows) {
       const container   = document.getElementById("messages-container");
       const placeholder = document.getElementById("messages-placeholder");
   
+      console.log("rows from GAS:", rows);
+  
       if (!container) return;
   
       if (!rows || !Array.isArray(rows) || rows.length === 0) {
-        // 沒資料就維持原本 placeholder
         console.log("No rows from GAS");
         return;
       }
   
       if (placeholder) placeholder.remove();
   
-      // 最新的在最上面
+      // 最新在上面
       rows = rows.slice().reverse();
   
-      rows.forEach(entry => {
-        const message = entry[MSG_FIELD];
-        if (!message) return;
-  
-        const timestamp = entry[TIME_FIELD] || "";
-        const name = entry[NAME_FIELD] || "Anonymous";
-  
+      rows.forEach((entry, idx) => {
         const card = document.createElement("div");
-        card.style.padding = "12px 16px";
-        card.style.border = "1px solid #e6e6e6";
+        card.style.padding      = "12px 16px";
+        card.style.border       = "1px solid #e6e6e6";
         card.style.borderRadius = "12px";
-        card.style.background = "#ffffff";
-        card.style.boxShadow = "0 1px 3px rgba(0,0,0,0.04)";
+        card.style.background   = "#ffffff";
+        card.style.boxShadow    = "0 1px 3px rgba(0,0,0,0.04)";
+        card.style.fontFamily   = "monospace";
+        card.style.whiteSpace   = "pre-wrap";
+        card.style.fontSize     = "11px";
   
-        card.innerHTML = `
-          <div style="font-size:11px; color:#999; margin-bottom:4px;">
-            ${timestamp}
-          </div>
-          <div style="font-weight:600; font-size:13px; margin-bottom:4px;">
-            ${name}
-          </div>
-          <div style="font-size:13px; color:#444; line-height:1.6; white-space:pre-line;">
-            ${message}
-          </div>
-        `;
+        card.textContent = `#${idx}\n` + JSON.stringify(entry, null, 2);
   
         container.appendChild(card);
       });
     }
   
     function loadMessages() {
-      const callbackName = "handleGASMessages";
+      const callbackName = "handleGASMessages_DEBUG";
   
-      // 把 callback 掛到 window 上，給 JSONP 呼叫
       window[callbackName] = function(data) {
         try {
           renderMessages(data);
         } finally {
-          // 用完就清掉，避免汙染全域
           delete window[callbackName];
         }
       };
@@ -392,7 +374,6 @@
       document.body.appendChild(script);
     }
   
-    // 頁面載入後就呼叫
     loadMessages();
   </script>
 
