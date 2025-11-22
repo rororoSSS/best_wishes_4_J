@@ -317,84 +317,84 @@
   </main>
 
   <script>
-    // 這裡換成你目前最新部署的 Web App URL（/exec 結尾那個）
+    // 這裡放「沒有 query string 的」 Apps Script /exec URL
     const API_URL = "https://script.google.com/macros/s/AKfycbztAoU66v2Mx9vucLPOtHZCeQdgQiTh-uvzrVefp-cqgtoyd1thN2WQvnSbwL2nkyfl8g/exec";
-
-    // 精準對應 Google Sheet 的欄位名稱
+  
     const TIME_FIELD = "時間戳記";
     const NAME_FIELD = "What is your name?  :D";
     const MSG_FIELD  = "What message would you like to share with Jennifer?  :D";
-
-    async function loadMessages() {
+  
+    function renderMessages(rows) {
       const container   = document.getElementById("messages-container");
       const placeholder = document.getElementById("messages-placeholder");
-
-      if (!container) {
-        console.error("messages-container not found");
+  
+      if (!container) return;
+  
+      if (!rows || !Array.isArray(rows) || rows.length === 0) {
+        // 沒資料就維持原本 placeholder
+        console.log("No rows from GAS");
         return;
       }
-
-      try {
-        const res = await fetch(API_URL);
-        if (!res.ok) {
-          throw new Error("HTTP status " + res.status);
-        }
-
-        let rows = await res.json();
-
-        // 沒資料就保持原本的 placeholder
-        if (!rows || !Array.isArray(rows) || rows.length === 0) {
-          console.log("No rows from API");
-          return;
-        }
-
-        // 最新的顯示在最上面
-        rows = rows.slice().reverse();
-
-        if (placeholder) {
-          placeholder.remove();
-        }
-
-        rows.forEach(entry => {
-          const message = entry[MSG_FIELD];
-          if (!message) return; // 沒寫內容就略過
-
-          const timestamp = entry[TIME_FIELD] || "";
-          const name      = entry[NAME_FIELD] || "Anonymous";
-
-          const card = document.createElement("div");
-          card.style.padding       = "12px 16px";
-          card.style.border        = "1px solid #e6e6e6";
-          card.style.borderRadius  = "12px";
-          card.style.background    = "#ffffff";
-          card.style.boxShadow     = "0 1px 3px rgba(0,0,0,0.04)";
-
-          card.innerHTML = `
-            <div style="font-size:11px; color:#999; margin-bottom:4px;">
-              ${timestamp}
-            </div>
-            <div style="font-weight:600; font-size:13px; margin-bottom:4px;">
-              ${name}
-            </div>
-            <div style="font-size:13px; color:#444; line-height:1.6; white-space:pre-line;">
-              ${message}
-            </div>
-          `;
-
-          container.appendChild(card);
-        });
-      } catch (err) {
-        console.error("Failed to load messages", err);
-        // 額外在畫面上顯示錯誤，避免肉眼看不出來
-        const errorDiv = document.createElement("div");
-        errorDiv.style.fontSize = "12px";
-        errorDiv.style.color = "#c00";
-        errorDiv.textContent = "Failed to load messages. Please check the API URL or deployment.";
-        container.appendChild(errorDiv);
-      }
+  
+      if (placeholder) placeholder.remove();
+  
+      // 最新的在最上面
+      rows = rows.slice().reverse();
+  
+      rows.forEach(entry => {
+        const message = entry[MSG_FIELD];
+        if (!message) return;
+  
+        const timestamp = entry[TIME_FIELD] || "";
+        const name = entry[NAME_FIELD] || "Anonymous";
+  
+        const card = document.createElement("div");
+        card.style.padding = "12px 16px";
+        card.style.border = "1px solid #e6e6e6";
+        card.style.borderRadius = "12px";
+        card.style.background = "#ffffff";
+        card.style.boxShadow = "0 1px 3px rgba(0,0,0,0.04)";
+  
+        card.innerHTML = `
+          <div style="font-size:11px; color:#999; margin-bottom:4px;">
+            ${timestamp}
+          </div>
+          <div style="font-weight:600; font-size:13px; margin-bottom:4px;">
+            ${name}
+          </div>
+          <div style="font-size:13px; color:#444; line-height:1.6; white-space:pre-line;">
+            ${message}
+          </div>
+        `;
+  
+        container.appendChild(card);
+      });
     }
-
+  
+    function loadMessages() {
+      const callbackName = "handleGASMessages";
+  
+      // 把 callback 掛到 window 上，給 JSONP 呼叫
+      window[callbackName] = function(data) {
+        try {
+          renderMessages(data);
+        } finally {
+          // 用完就清掉，避免汙染全域
+          delete window[callbackName];
+        }
+      };
+  
+      const script = document.createElement("script");
+      script.src = API_URL + "?callback=" + encodeURIComponent(callbackName);
+      script.onerror = function() {
+        console.error("Failed to load GAS script");
+      };
+      document.body.appendChild(script);
+    }
+  
+    // 頁面載入後就呼叫
     loadMessages();
   </script>
+
 </body>
 </html>
