@@ -3,61 +3,27 @@
 <head>
   <meta charset="UTF-8" />
   <title>QR for Homepage</title>
-
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcode-generator/1.4.4/qrcode.min.js"></script>
-
   <style>
     body {
       font-family: monospace;
       padding: 24px;
     }
-    #qrCanvas {
-      border: 1px solid #ccc;
+    img {
       margin-top: 16px;
     }
   </style>
 </head>
 <body>
 
-<h2>QR Code 21×21 Matrix</h2>
-<p>QR code for this site's homepage:</p>
-<p id="url"></p>
+<h2>QR Code for this site</h2>
+<p>掃這個會打開這個網站：</p>
+<p>https://你的帳號.github.io/你的repo/</p>
 
-<canvas id="qrCanvas"></canvas>
-
-<script>
-  // 取得正確的首頁 URL：用 URL 物件來避免大小寫/路徑錯誤
-  const current = new URL(window.location.href);
-
-  // `/qr.html` → `/`
-  current.pathname = current.pathname.replace(/qr\.html$/i, '');
-
-  const homepageUrl = current.toString();
-
-  document.getElementById('url').textContent = homepageUrl;
-
-  // 生成 version 1 的 QR code
-  const qr = qrcode(1, 'L');
-  qr.addData(homepageUrl);
-  qr.make();
-
-  const moduleCount = qr.getModuleCount(); // 21
-  const canvas = document.getElementById('qrCanvas');
-  const ctx = canvas.getContext('2d');
-
-  const size = 210;
-  canvas.width = size;
-  canvas.height = size;
-
-  const moduleSize = size / moduleCount;
-
-  for (let r = 0; r < moduleCount; r++) {
-    for (let c = 0; c < moduleCount; c++) {
-      ctx.fillStyle = qr.isDark(r, c) ? '#000' : '#fff';
-      ctx.fillRect(c * moduleSize, r * moduleSize, moduleSize, moduleSize);
-    }
-  }
-</script>
+<!-- 這裡把網址換成你自己的首頁網址 -->
+<img
+  src="https://api.qrserver.com/v1/create-qr-code/?size=210x210&data=https://rororosss.github.io/best_wishes_4_J/"
+  alt="QR code for homepage"
+/>
 
 </body>
 </html>
