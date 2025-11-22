@@ -3,27 +3,57 @@
 <head>
   <meta charset="UTF-8" />
   <title>QR for Homepage</title>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcode-generator/1.4.4/qrcode.min.js"></script>
+
   <style>
     body {
       font-family: monospace;
       padding: 24px;
     }
-    img {
+    #qrCanvas {
+      border: 1px solid #ccc;
       margin-top: 16px;
     }
   </style>
 </head>
 <body>
 
-<h2>QR Code for this site</h2>
-<p>掃這個會打開這個網站：</p>
-<p>https://你的帳號.github.io/你的repo/</p>
+<h2>QR Code 21×21 Matrix</h2>
+<p>QR code for this site's homepage:</p>
+<p id="url"></p>
 
-<!-- 這裡把網址換成你自己的首頁網址 -->
-<img
-  src="https://api.qrserver.com/v1/create-qr-code/?size=210x210&data=https://rororosss.github.io/best_wishes_4_J/"
-  alt="QR code for homepage"
-/>
+<canvas id="qrCanvas"></canvas>
+
+<script>
+  const current = new URL(window.location.href);
+  current.pathname = current.pathname.replace(/qr\.html$/i, '');
+  const homepageUrl = current.toString();
+
+  document.getElementById('url').textContent = homepageUrl;
+
+  // 讓 library 自動選合適版本（不再限制 21×21）
+  const qr = qrcode(0, 'L');   // 👈 這裡改成 0
+  qr.addData(homepageUrl);
+  qr.make();
+
+  const moduleCount = qr.getModuleCount(); // 不一定是 21，會變大
+  const canvas = document.getElementById('qrCanvas');
+  const ctx = canvas.getContext('2d');
+
+  const size = 210;
+  canvas.width = size;
+  canvas.height = size;
+
+  const moduleSize = size / moduleCount;
+
+  for (let r = 0; r < moduleCount; r++) {
+    for (let c = 0; c < moduleCount; c++) {
+      ctx.fillStyle = qr.isDark(r, c) ? '#000' : '#fff';
+      ctx.fillRect(c * moduleSize, r * moduleSize, moduleSize, moduleSize);
+    }
+  }
+</script>
 
 </body>
 </html>
