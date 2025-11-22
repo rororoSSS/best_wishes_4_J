@@ -317,46 +317,57 @@
   </main>
 
   <script>
-    const API_URL = "https://script.google.com/macros/s/AKfycbyb6qQCrE7s8BK8UQpslOctDWB0OE9Yi6o7JTvOoOsk/dev";
+    // 這裡換成你目前最新部署的 Web App URL（/exec 結尾那個）
+    const API_URL = "https://script.google.com/macros/s/AKfycbztAoU66v2Mx9vucLPOtHZCeQdgQiTh-uvzrVefp-cqgtoyd1thN2WQvnSbwL2nkyfl8g/exec";
 
-    fetch(API_URL)
-      .then(res => res.json())
-      .then(rows => {
-        const container = document.getElementById("messages-container");
-        const placeholder = document.getElementById("messages-placeholder");
-        if (!container) return;
+    // 精準對應 Google Sheet 的欄位名稱
+    const TIME_FIELD = "時間戳記";
+    const NAME_FIELD = "What is your name?  :D";
+    const MSG_FIELD  = "What message would you like to share with Jennifer?  :D";
 
-        if (!rows || rows.length === 0) {
-          // 沒有人留言，就維持 placeholder
-          return;
+    async function loadMessages() {
+      const container   = document.getElementById("messages-container");
+      const placeholder = document.getElementById("messages-placeholder");
+
+      if (!container) {
+        console.error("messages-container not found");
+        return;
+      }
+
+      try {
+        const res = await fetch(API_URL);
+        if (!res.ok) {
+          throw new Error("HTTP status " + res.status);
         }
 
-        if (placeholder) {
-          placeholder.remove();
+        let rows = await res.json();
+
+        // 沒資料就保持原本的 placeholder
+        if (!rows || !Array.isArray(rows) || rows.length === 0) {
+          console.log("No rows from API");
+          return;
         }
 
         // 最新的顯示在最上面
         rows = rows.slice().reverse();
 
+        if (placeholder) {
+          placeholder.remove();
+        }
+
         rows.forEach(entry => {
-          const keys = Object.keys(entry);
+          const message = entry[MSG_FIELD];
+          if (!message) return; // 沒寫內容就略過
 
-          const timeKey = keys.find(k => k.toLowerCase().includes("時間戳記"));
-          const nameKey = keys.find(k => k.toLowerCase().startsWith("What is your name?  :D"));
-          const msgKey  = keys.find(k => k.toLowerCase().startsWith("What message would you like to share with Jennifer?   :D"));
-
-          const timestamp = timeKey ? entry[timeKey] : "";
-          const name = nameKey ? (entry[nameKey] || "Anonymous") : "Anonymous";
-          const message = msgKey ? (entry[msgKey] || "") : "";
-
-          if (!message) return; // 沒寫內容就跳過
+          const timestamp = entry[TIME_FIELD] || "";
+          const name      = entry[NAME_FIELD] || "Anonymous";
 
           const card = document.createElement("div");
-          card.style.padding = "12px 16px";
-          card.style.border = "1px solid #e6e6e6";
-          card.style.borderRadius = "12px";
-          card.style.background = "#ffffff";
-          card.style.boxShadow = "0 1px 3px rgba(0,0,0,0.04)";
+          card.style.padding       = "12px 16px";
+          card.style.border        = "1px solid #e6e6e6";
+          card.style.borderRadius  = "12px";
+          card.style.background    = "#ffffff";
+          card.style.boxShadow     = "0 1px 3px rgba(0,0,0,0.04)";
 
           card.innerHTML = `
             <div style="font-size:11px; color:#999; margin-bottom:4px;">
@@ -372,10 +383,18 @@
 
           container.appendChild(card);
         });
-      })
-      .catch(err => {
+      } catch (err) {
         console.error("Failed to load messages", err);
-      });
+        // 額外在畫面上顯示錯誤，避免肉眼看不出來
+        const errorDiv = document.createElement("div");
+        errorDiv.style.fontSize = "12px";
+        errorDiv.style.color = "#c00";
+        errorDiv.textContent = "Failed to load messages. Please check the API URL or deployment.";
+        container.appendChild(errorDiv);
+      }
+    }
+
+    loadMessages();
   </script>
 </body>
 </html>
